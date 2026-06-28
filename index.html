@@ -3,47 +3,911 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>32ps</title>
+  <title>thirtytwops</title>
+  <meta name="description" content="32ps - MacBooks, iPhones, space, computers, and weird Apple device projects." />
+  <meta name="theme-color" content="#080a22" />
+  <meta name="application-name" content="thirtytwops" />
+  <link rel="canonical" href="https://32ps.net/" />
+  <link rel="icon" type="image/png" href="/assets/meta/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/meta/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://32ps.net/" />
+  <meta property="og:site_name" content="thirtytwops" />
+  <meta property="og:title" content="thirtytwops" />
+  <meta property="og:description" content="32ps - MacBooks, iPhones, space, computers, and weird Apple device projects." />
+  <meta property="og:image" content="https://32ps.net/assets/meta/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="thirtytwops preview with 32ps GitHub profile picture and neon space styling" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="thirtytwops" />
+  <meta name="twitter:description" content="32ps - MacBooks, iPhones, space, computers, and weird Apple device projects." />
+  <meta name="twitter:image" content="https://32ps.net/assets/meta/og-image.png" />
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #03040a;
+      --text: #f7f8ff;
+      --muted: #c8c7f5;
+      --line: rgba(255, 255, 255, 0.16);
+      --cyan: #80d9ff;
+      --gold: #ff66e8;
+      --violet: #b88cff;
+      --hot: #ff47df;
+      --green: #b8a6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      background-color: black;
-      color: white;
-      font-family: Arial, sans-serif;
+      min-height: 260vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(73, 93, 255, 0.24), transparent 30%),
+        radial-gradient(circle at 82% 30%, rgba(196, 61, 255, 0.25), transparent 30%),
+        radial-gradient(circle at 50% 86%, rgba(55, 216, 255, 0.14), transparent 34%),
+        linear-gradient(135deg, #02030b 0%, #0e1148 45%, #160733 100%);
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(151, 136, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(103, 151, 255, 0.035) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(to bottom, transparent, black 10%, black 70%, transparent);
+    }
+
+    .led-glow {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0.68;
+      mix-blend-mode: screen;
+    }
+
+    .led-glow::before {
+      content: "";
+      position: absolute;
+      top: 92px;
+      left: 7vw;
+      right: 7vw;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, #66e4ff 12%, #8c70ff 36%, #ff47df 62%, #70e5ff 86%, transparent);
+      box-shadow: 0 0 16px rgba(128, 217, 255, 0.72), 0 0 38px rgba(255, 71, 223, 0.48), 0 0 92px rgba(100, 80, 255, 0.34);
+      animation: ledPulse 5s ease-in-out infinite alternate;
+    }
+
+    @keyframes ledPulse {
+      from {
+        opacity: 0.58;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0.94;
+        transform: translateY(3px);
+      }
+    }
+
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
-      text-align: center;
+      justify-content: center;
+      padding: 18px clamp(14px, 4vw, 56px);
+      pointer-events: none;
     }
 
-    h1 {
-      font-size: 64px;
-      margin: 10px 0;
+    .top-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      max-width: calc(100vw - 28px);
+      padding: 6px;
+      border: 1px solid rgba(214, 222, 255, 0.42);
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(9, 13, 42, 0.74), rgba(32, 18, 76, 0.66));
+      box-shadow: 0 20px 70px rgba(20, 16, 88, 0.42), 0 0 30px rgba(128, 217, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(18px) saturate(1.2);
+      pointer-events: auto;
     }
 
-    p {
-      font-size: 28px;
-      margin: 8px 0;
+    .top-pill:hover {
+      border-color: rgba(128, 217, 255, 0.58);
+      box-shadow: 0 22px 78px rgba(20, 16, 88, 0.46), 0 0 38px rgba(128, 217, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      color: white;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: inset 0 0 18px rgba(128, 217, 255, 0.18);
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .mark svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .mark:hover {
+      transform: rotate(-8deg) scale(1.05);
+      border-color: rgba(128, 217, 255, 0.56);
+      box-shadow: 0 0 22px rgba(128, 217, 255, 0.24), inset 0 0 18px rgba(128, 217, 255, 0.2);
+    }
+
+    .pill-link,
+    .pill-action {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      color: rgba(247, 248, 255, 0.88);
+      font-size: 13px;
+      font-weight: 650;
+      padding: 0 11px;
+      white-space: nowrap;
+      transition: color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .pill-link:hover,
+    .pill-action:hover {
+      color: white;
+      background: rgba(139, 157, 255, 0.16);
+      transform: translateY(-1px);
+    }
+
+    .pill-action {
+      gap: 8px;
+      margin-left: 3px;
+      color: white;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .pill-action::after {
+      content: "";
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, white 0 15%, #91d8ff 16% 36%, #665cff 37% 100%);
+      box-shadow: 0 0 18px rgba(128, 217, 255, 0.42);
     }
 
     a {
-      color: #1da1f2;
-      font-size: 28px;
+      color: var(--text);
       text-decoration: none;
-      margin-top: 10px;
     }
 
-    a:hover {
-      text-decoration: underline;
+    .social-link {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 14px;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .social-link::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 -45%;
+      width: 42%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+      transform: skewX(-18deg);
+      transition: translate 280ms ease;
+    }
+
+    .social-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(184, 166, 255, 0.85);
+      background: rgba(111, 92, 255, 0.16);
+    }
+
+    .social-link:hover::before {
+      translate: 340% 0;
+    }
+
+    main {
+      position: relative;
+    }
+
+    .hero {
+      position: sticky;
+      top: 0;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 430px);
+      gap: clamp(28px, 8vw, 110px);
+      align-items: center;
+      padding: 120px clamp(20px, 7vw, 96px) 80px;
+    }
+
+    .hero-stage {
+      min-height: 240vh;
+    }
+
+    .hero-inner {
+      max-width: 980px;
+    }
+
+    .hero-orbit {
+      position: relative;
+      justify-self: center;
+      width: min(42vw, 470px);
+      aspect-ratio: 1;
+      opacity: calc(0.7 + var(--scroll-progress, 0) * 0.24);
+      transform: translateX(calc(10px - var(--scroll-progress, 0) * 10px));
+      filter: drop-shadow(0 0 34px rgba(116, 214, 255, 0.28));
+    }
+
+    .orbit-ring {
+      position: absolute;
+      inset: 12%;
+      border: 1px solid rgba(140, 212, 255, 0.34);
+      border-radius: 50%;
+      box-shadow: inset 0 0 38px rgba(116, 121, 255, 0.18), 0 0 44px rgba(255, 71, 223, 0.18);
+      animation: orbitTurn 18s linear infinite;
+    }
+
+    .orbit-ring:nth-child(3) {
+      inset: 24% 5%;
+      border-color: rgba(255, 71, 223, 0.34);
+      transform: rotate(63deg);
+      animation-duration: 26s;
+      animation-direction: reverse;
+    }
+
+    .orbit-ring:nth-child(4) {
+      inset: 5% 23%;
+      border-color: rgba(184, 166, 255, 0.32);
+      transform: rotate(-42deg);
+      animation-duration: 22s;
+    }
+
+    .hero-blackhole {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 60%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(-10deg);
+      background:
+        radial-gradient(circle, #000 0 25%, rgba(2, 3, 10, 0.96) 26% 36%, rgba(4, 8, 34, 0.28) 37% 46%, transparent 47%),
+        conic-gradient(from 15deg, transparent 0 9%, rgba(128, 217, 255, 0.95) 12%, rgba(255, 71, 223, 0.78) 22%, transparent 34%, rgba(184, 166, 255, 0.62) 50%, rgba(128, 217, 255, 0.84) 62%, transparent 76%, rgba(255, 71, 223, 0.5) 88%, transparent 100%);
+      box-shadow: inset 0 0 48px rgba(0, 0, 0, 0.95), 0 0 36px rgba(128, 217, 255, 0.42), 0 0 82px rgba(255, 71, 223, 0.24);
+      filter: drop-shadow(0 0 42px rgba(128, 217, 255, 0.3));
+      animation: blackholeFloat 8s ease-in-out infinite alternate;
+    }
+
+    .hero-blackhole::before,
+    .hero-blackhole::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-blackhole::before {
+      inset: -18% -34%;
+      border-top: 3px solid rgba(128, 217, 255, 0.82);
+      border-bottom: 3px solid rgba(255, 71, 223, 0.64);
+      transform: rotate(8deg) scaleY(0.38);
+      filter: blur(0.2px);
+      box-shadow: 0 0 24px rgba(128, 217, 255, 0.46), 0 0 44px rgba(255, 71, 223, 0.24);
+    }
+
+    .hero-blackhole::after {
+      inset: 31%;
+      background: #000;
+      box-shadow: inset 0 0 14px rgba(0, 0, 0, 1), 0 0 28px rgba(0, 0, 0, 0.96);
+    }
+
+    .orbit-beam {
+      position: absolute;
+      left: 50%;
+      top: 6%;
+      width: 4px;
+      height: 88%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, transparent, rgba(121, 227, 255, 0.85), rgba(255, 71, 223, 0.62), transparent);
+      box-shadow: 0 0 26px rgba(128, 217, 255, 0.7), 0 0 60px rgba(255, 71, 223, 0.4);
+      transform: translateX(-50%) rotate(24deg);
+      opacity: 0.76;
+    }
+
+    @keyframes orbitTurn {
+      to {
+        rotate: 360deg;
+      }
+    }
+
+    @keyframes blackholeFloat {
+      from {
+        transform: translate(-50%, -50%) rotate(-13deg) scale(0.98);
+      }
+      to {
+        transform: translate(-50%, -52%) rotate(-4deg) scale(1.03);
+      }
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(72px, 16vw, 180px);
+      line-height: 0.86;
+      letter-spacing: 0;
+      text-wrap: balance;
+      text-shadow: 0 0 40px rgba(118, 102, 255, 0.32), 0 0 80px rgba(87, 196, 255, 0.16);
+    }
+
+    .hero-socials {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      width: min(100%, 420px);
+      margin-top: 34px;
+    }
+
+    .hero-socials .social-link {
+      flex: 0 0 auto;
+      white-space: nowrap;
+      width: fit-content;
+      font-size: clamp(14px, 1.55vw, 20px);
+      padding: 11px 14px;
+      background: linear-gradient(135deg, rgba(72, 92, 255, 0.2), rgba(173, 88, 255, 0.16));
+      box-shadow: 0 18px 42px rgba(9, 10, 38, 0.38);
+      transform: translateX(calc(-42px + min(1, max(0, (var(--scroll-progress, 0) - var(--delay, 0)) * 1.65)) * 42px));
+      opacity: min(1, max(0, (var(--scroll-progress, 0) - var(--delay, 0)) * 1.75));
+      transition: transform 120ms linear, opacity 120ms linear;
+    }
+
+    .hero-socials .social-link:nth-child(1) {
+      --delay: 0;
+    }
+
+    .hero-socials .social-link:nth-child(2) {
+      --delay: 0.24;
+    }
+
+    .hero-socials .social-link:nth-child(3) {
+      --delay: 0.48;
+    }
+
+    .intro-section {
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      padding: 96px clamp(20px, 7vw, 96px);
+    }
+
+    .intro-card {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+      gap: clamp(28px, 6vw, 72px);
+      align-items: center;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: clamp(22px, 5vw, 48px);
+      border: 1px solid rgba(190, 213, 255, 0.22);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(91, 192, 255, 0.1), rgba(255, 71, 223, 0.08)),
+        rgba(7, 10, 32, 0.38);
+      box-shadow: 0 24px 80px rgba(4, 7, 28, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 0 42px rgba(128, 217, 255, 0.08);
+      backdrop-filter: blur(24px) saturate(1.35);
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .intro-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(120deg, rgba(128, 217, 255, 0.76), rgba(255, 71, 223, 0.4), rgba(184, 166, 255, 0.16), rgba(128, 217, 255, 0.62));
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      opacity: 0.72;
+    }
+
+    .intro-card::after {
+      content: "";
+      position: absolute;
+      inset: -35% auto auto -20%;
+      width: 58%;
+      height: 170%;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(128, 217, 255, 0.11), transparent);
+      transform: rotate(18deg);
+    }
+
+    .intro-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .intro-card.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .intro-title {
+      margin: 0 0 18px;
+      font-size: clamp(42px, 8vw, 92px);
+      line-height: 0.95;
+      letter-spacing: 0;
+      text-shadow: 0 0 28px rgba(128, 217, 255, 0.16);
+    }
+
+    .intro-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(20px, 2.5vw, 30px);
+      line-height: 1.35;
+      max-width: 720px;
+    }
+
+    .profile-wrap {
+      justify-self: center;
+      position: relative;
+      width: min(100%, 320px);
+      aspect-ratio: 1;
+      border-radius: 8px;
+      border: 1px solid rgba(203, 224, 255, 0.28);
+      padding: 10px;
+      background:
+        linear-gradient(135deg, rgba(128, 217, 255, 0.18), rgba(255, 71, 223, 0.12)),
+        rgba(255, 255, 255, 0.045);
+      box-shadow: 0 0 36px rgba(128, 217, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(12px);
+    }
+
+    figure {
+      margin: 0;
+    }
+
+    .profile-wrap img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .gallery-stage {
+      min-height: 230vh;
+      position: relative;
+      padding: 0 clamp(20px, 7vw, 96px);
+    }
+
+    .gallery-sticky {
+      position: sticky;
+      top: 0;
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+      padding: 110px 0 70px;
+    }
+
+    .spiral-gallery {
+      position: relative;
+      justify-self: end;
+      width: min(100%, 1040px);
+      height: min(70vh, 660px);
+      min-height: 520px;
+      margin-top: 58px;
+    }
+
+    .spiral-card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: clamp(170px, 22vw, 305px);
+      aspect-ratio: 4 / 5;
+      border-radius: 8px;
+      border: 1px solid rgba(220, 230, 255, 0.24);
+      background: rgba(4, 7, 24, 0.72);
+      box-shadow: 0 28px 70px rgba(3, 4, 20, 0.58), 0 0 34px rgba(115, 214, 255, 0.16);
+      overflow: hidden;
+      opacity: 0;
+      will-change: transform, opacity;
+      backdrop-filter: blur(14px);
+    }
+
+    .spiral-card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: transparent;
+    }
+
+    .links-section {
+      padding: 0 clamp(20px, 7vw, 96px) 120px;
+    }
+
+    .links-panel {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line);
+      padding-top: 28px;
+    }
+
+    .links-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .socials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .social-link.twitter {
+      color: var(--cyan);
+    }
+
+    .social-link.instagram {
+      color: var(--violet);
+    }
+
+    @media (max-width: 760px) {
+      .site-header {
+        justify-content: flex-start;
+      }
+
+      .top-pill {
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .top-pill::-webkit-scrollbar {
+        display: none;
+      }
+
+      .intro-card {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-wrap {
+        width: min(260px, 100%);
+        order: -1;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-orbit {
+        display: none;
+      }
+
+      .gallery-stage {
+        min-height: auto;
+        padding-bottom: 80px;
+      }
+
+      .gallery-sticky {
+        position: relative;
+        min-height: auto;
+        padding-top: 80px;
+      }
+
+      .spiral-gallery {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        height: auto;
+        min-height: 0;
+        margin-top: 0;
+      }
+
+      .spiral-card {
+        position: relative;
+        left: auto;
+        top: auto;
+        width: min(100%, 330px);
+        justify-self: center;
+        opacity: 1;
+        transform: none !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .hero-socials,
+      .pill-link,
+      .pill-action,
+      .social-link {
+        transition: none;
+      }
+
+      .orbit-ring {
+        animation: none;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>hello</h1>
-  <p>twitter</p>
-  <p>tweezer:</p>
-  </a>
+  <canvas id="space" aria-hidden="true"></canvas>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="led-glow" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <nav class="top-pill" aria-label="Primary navigation">
+      <a class="mark" href="#top" aria-label="32ps home">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4.4 13.1c3.1 3.9 11.8 3.9 15.2 0M4.6 10.9c3.1-3.9 11.8-3.9 14.8 0" />
+          <path fill="currentColor" d="M12 7.7 13.1 10l2.5.4-1.8 1.8.4 2.5-2.2-1.2-2.2 1.2.4-2.5-1.8-1.8 2.5-.4L12 7.7Z" />
+        </svg>
+      </a>
+      <a class="pill-link" href="#about">About</a>
+      <a class="pill-link" href="#gallery">Gallery</a>
+      <a class="pill-link" href="https://twitter.com/2021macbookpro">Twitter</a>
+      <a class="pill-link" href="https://twitter.com/2022macbookair">Air Twitter</a>
+      <a class="pill-link" href="https://www.instagram.com/2022macbookair/">Instagram</a>
+      <a class="pill-action" href="https://github.com/32ps/32ps.github.io">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero-stage">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-inner">
+          <h1 id="hero-title">32ps</h1>
+          <div class="hero-socials" aria-label="Featured social links">
+            <a class="social-link twitter" href="https://twitter.com/2021macbookpro">Main Twitter @2021macbookpro</a>
+            <a class="social-link twitter" href="https://twitter.com/2022macbookair">Alt Twitter @2022macbookair</a>
+            <a class="social-link instagram" href="https://www.instagram.com/2022macbookair/">Instagram @2022macbookair</a>
+          </div>
+        </div>
+        <div class="hero-orbit" aria-hidden="true">
+          <div class="orbit-beam"></div>
+          <div class="orbit-ring"></div>
+          <div class="orbit-ring"></div>
+          <div class="orbit-ring"></div>
+          <div class="hero-blackhole"></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="intro-section" id="about" aria-labelledby="about-title">
+      <div class="intro-card">
+        <div>
+          <h2 class="intro-title" id="about-title">Hi, I'm 32ps.</h2>
+          <p class="intro-text">I mess with MacBooks, iPhones, and other Apple devices. MacBooks are my main special interest. I love Outer Wilds, space, computers.</p>
+        </div>
+        <figure>
+          <div class="profile-wrap">
+            <img src="https://github.com/32ps.png?size=512" alt="32ps GitHub profile picture" />
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="gallery-stage" id="gallery" aria-label="Photo gallery">
+      <div class="gallery-sticky">
+        <div class="spiral-gallery" aria-label="Photo gallery">
+          <figure class="spiral-card">
+            <img src="assets/gallery/iphone-blue-case.jpg" alt="Blue iPhone in a clear MagSafe case" />
+          </figure>
+          <figure class="spiral-card">
+            <img src="assets/gallery/macbook-astronaut.jpg" alt="MacBook with an astronaut wallpaper under blue lighting" />
+          </figure>
+          <figure class="spiral-card">
+            <img src="assets/gallery/iphone-hand.jpg" alt="Blue iPhone held in a hand" />
+          </figure>
+          <figure class="spiral-card">
+            <img src="assets/gallery/powerbook-lofi.jpg" alt="Laptop showing a lo-fi wallpaper under blue lighting" />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="links-section" id="socials" aria-label="Social profiles">
+      <div class="links-panel">
+        <p>Socials</p>
+        <div class="socials">
+          <a class="social-link twitter" href="https://twitter.com/2021macbookpro">Main Twitter @2021macbookpro</a>
+          <a class="social-link twitter" href="https://twitter.com/2022macbookair">Alt Twitter @2022macbookair</a>
+          <a class="social-link instagram" href="https://www.instagram.com/2022macbookair/">Instagram @2022macbookair</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#space");
+    const ctx = canvas.getContext("2d");
+    const introCard = document.querySelector(".intro-card");
+    const root = document.documentElement;
+    const galleryStage = document.querySelector(".gallery-stage");
+    const spiralCards = Array.from(document.querySelectorAll(".spiral-card"));
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let stars = [];
+    let width = 0;
+    let height = 0;
+    let scrollY = 0;
+    let targetScrollY = 0;
+    let time = 0;
+
+    function clamp(value, min = 0, max = 1) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function updateGallery() {
+      if (!galleryStage || !spiralCards.length) return;
+
+      const isStacked = window.matchMedia("(max-width: 760px)").matches;
+      if (isStacked || prefersReducedMotion) {
+        for (const card of spiralCards) {
+          card.style.opacity = "1";
+          card.style.transform = "";
+        }
+        return;
+      }
+
+      const rect = galleryStage.getBoundingClientRect();
+      const travel = Math.max(1, galleryStage.offsetHeight - window.innerHeight);
+      const galleryProgress = clamp(-rect.top / travel);
+      const positions = [
+        { angle: -138, radius: 250, rotation: -11, offsetX: 170 },
+        { angle: -18, radius: 300, rotation: 8, offsetX: 190 },
+        { angle: 78, radius: 250, rotation: -7, offsetX: 160 },
+        { angle: 205, radius: 205, rotation: 12, offsetX: 135 }
+      ];
+
+      spiralCards.forEach((card, index) => {
+        const start = index * 0.12;
+        const local = clamp((galleryProgress - start) / 0.56);
+        const ease = 1 - Math.pow(1 - local, 3);
+        const config = positions[index];
+        const angle = (config.angle - (1 - ease) * 170) * (Math.PI / 180);
+        const radiusScale = Math.min(width, 1100) / 1100;
+        const radius = config.radius * radiusScale * ease;
+        const x = Math.cos(angle) * radius + config.offsetX * radiusScale * ease;
+        const y = Math.sin(angle) * radius * 0.72;
+        const scale = 0.78 + ease * 0.38;
+        const rotation = config.rotation * ease;
+
+        card.style.opacity = `${clamp(local * 1.35)}`;
+        card.style.transform = `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rotation.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      });
+    }
+
+    function resize() {
+      const scale = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * scale);
+      canvas.height = Math.floor(height * scale);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+
+      const count = Math.max(120, Math.floor((width * height) / 7600));
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        z: 0.35 + Math.random() * 1.6,
+        r: 0.45 + Math.random() * 1.55,
+        hue: Math.random() > 0.78 ? 42 : Math.random() > 0.58 ? 190 : 235
+      }));
+    }
+
+    function draw() {
+      targetScrollY = window.scrollY;
+      scrollY += (targetScrollY - scrollY) * 0.09;
+      time += prefersReducedMotion ? 0 : 0.006;
+
+      const progress = Math.min(1, targetScrollY / Math.max(1, height * 1.35));
+      root.style.setProperty("--scroll-progress", progress.toFixed(3));
+      updateGallery();
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#03040a";
+      ctx.fillRect(0, 0, width, height);
+
+      const scrollBoost = Math.min(42, Math.abs(targetScrollY - scrollY) * 0.8);
+      const driftX = Math.sin(time * 1.7) * 10 + scrollY * 0.035;
+      const driftY = Math.cos(time * 1.2) * 8 + scrollY * 0.02;
+
+      for (const star of stars) {
+        let x = (star.x + driftX * star.z + scrollBoost * star.z) % width;
+        let y = (star.y + driftY * star.z + scrollY * 0.06 * star.z) % height;
+        if (x < 0) x += width;
+        if (y < 0) y += height;
+
+        const glow = 0.36 + Math.sin(time * 5 + star.x) * 0.22;
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${star.hue}, 100%, 78%, ${0.42 + glow * 0.38})`;
+        ctx.arc(x, y, star.r * star.z, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (scrollBoost > 3) {
+          ctx.beginPath();
+          ctx.strokeStyle = `hsla(${star.hue}, 100%, 78%, 0.22)`;
+          ctx.lineWidth = Math.max(1, star.r * 0.6);
+          ctx.moveTo(x, y);
+          ctx.lineTo(x - scrollBoost * star.z * 0.9, y - scrollBoost * star.z * 0.22);
+          ctx.stroke();
+        }
+      }
+
+      const nebula = ctx.createRadialGradient(width * 0.28, height * 0.22, 0, width * 0.28, height * 0.22, width * 0.62);
+      nebula.addColorStop(0, "rgba(92, 142, 255, 0.14)");
+      nebula.addColorStop(0.5, "rgba(151, 107, 255, 0.1)");
+      nebula.addColorStop(1, "rgba(3, 4, 10, 0)");
+      ctx.fillStyle = nebula;
+      ctx.fillRect(0, 0, width, height);
+
+      requestAnimationFrame(draw);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        }
+      }
+    }, { threshold: 0.3 });
+
+    observer.observe(introCard);
+    window.addEventListener("resize", resize);
+    resize();
+    draw();
+  </script>
 </body>
 </html>
